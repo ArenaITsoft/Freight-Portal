@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freight One — Logistics Marketplace Demo</title>
+<style>
+:root{
+  --navy:#10233f;--blue:#1769e0;--cyan:#20a4f3;--bg:#f5f7fb;--card:#fff;
+  --text:#172033;--muted:#6f7b90;--line:#e7ebf2;--green:#19a974;--orange:#f59e0b;
+  --red:#e55353;--shadow:0 12px 35px rgba(22,40,70,.08);--radius:18px
+}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);background:var(--bg)}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+.sidebar{width:250px;background:linear-gradient(180deg,#10233f,#0c1b31);color:#fff;padding:22px 15px;position:fixed;inset:0 auto 0 0;z-index:20}
+.logo{display:flex;align-items:center;gap:11px;padding:4px 10px 28px;font-weight:800;font-size:20px}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#20a4f3,#1769e0);display:grid;place-items:center;box-shadow:0 8px 20px #1769e055}
+.logo-mark:before{content:"✈";font-size:19px}
+.role-label{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#8ea0bb;padding:0 11px 9px}
+.nav button{width:100%;border:0;background:transparent;color:#c5d0e0;padding:12px 11px;border-radius:11px;text-align:left;margin:2px 0;display:flex;gap:12px;align-items:center;font-weight:600}
+.nav button:hover,.nav button.active{background:#ffffff12;color:#fff}.nav button.active{box-shadow:inset 3px 0 #20a4f3}
+.nav .ico{width:22px;text-align:center}
+.sidebar-bottom{position:absolute;bottom:20px;left:15px;right:15px;border-top:1px solid #ffffff12;padding-top:14px}
+.user-mini{display:flex;gap:10px;align-items:center;padding:8px}.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#e8f3ff;color:#1769e0;font-weight:800}
+.user-mini small{display:block;color:#8ea0bb;margin-top:2px}
+.main{margin-left:250px;width:calc(100% - 250px)}
+.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:10}
+.crumb{font-size:14px;color:var(--muted)}.crumb strong{color:var(--text)}
+.top-actions{display:flex;align-items:center;gap:10px}.icon-btn{border:1px solid var(--line);background:#fff;width:39px;height:39px;border-radius:11px}
+.role-switch{display:flex;background:#eef3fa;padding:4px;border-radius:12px;gap:3px}.role-switch button{border:0;background:transparent;padding:8px 12px;border-radius:9px;color:#65738a;font-weight:700;font-size:12px}.role-switch button.active{background:#fff;color:var(--blue);box-shadow:0 3px 10px #18385d14}
+.content{padding:28px;max-width:1500px;margin:auto}
+.hero{background:linear-gradient(120deg,#10233f 0%,#174d91 62%,#1a8fce 100%);border-radius:24px;color:#fff;padding:30px;display:flex;justify-content:space-between;align-items:center;overflow:hidden;position:relative;box-shadow:0 18px 45px #10233f20}
+.hero:after{content:"";position:absolute;width:310px;height:310px;border-radius:50%;right:-80px;top:-130px;background:#ffffff10}
+.hero h1{font-size:28px;margin:5px 0 8px}.hero p{margin:0;color:#d7e8ff;max-width:620px;line-height:1.6}.eyebrow{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:#79d0ff;font-weight:800}
+.hero .quick{position:relative;z-index:1;background:#fff;color:var(--navy);padding:13px 17px;border-radius:12px;border:0;font-weight:800}
+.grid{display:grid;gap:18px}.stats{grid-template-columns:repeat(4,1fr);margin:20px 0}.stat,.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat{padding:20px}.stat .top{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;font-weight:700}.stat .num{font-size:27px;font-weight:850;margin:8px 0 3px}.trend{font-size:11px;color:var(--green);font-weight:800}
+.two{grid-template-columns:1.45fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.card{padding:20px}.card h3{margin:0;font-size:16px}.sub{font-size:12px;color:var(--muted);margin-top:5px}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:17px}.link{border:0;background:transparent;color:var(--blue);font-weight:800;font-size:12px}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.service{border:1px solid var(--line);border-radius:15px;padding:16px;transition:.2s;background:#fff}.service:hover{transform:translateY(-2px);border-color:#b8d7fa;box-shadow:0 8px 20px #174d9112}.service .sicon{width:40px;height:40px;border-radius:12px;background:#eaf5ff;display:grid;place-items:center;font-size:20px;margin-bottom:11px}.service strong{font-size:13px}.service span{display:block;color:var(--muted);font-size:11px;margin-top:5px}
+.booking{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}.booking:last-child{border:0}.route{display:flex;gap:10px;align-items:center}.route b{font-size:13px}.route small{color:var(--muted)}.route-arrow{color:#9aa7ba}.status{padding:6px 9px;border-radius:20px;font-size:10px;font-weight:800;background:#eaf8f2;color:var(--green)}.status.orange{background:#fff6df;color:#b87900}.status.blue{background:#eaf3ff;color:var(--blue)}
+.quote-row{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;display:flex;align-items:center;gap:12px}.partner-logo{width:38px;height:38px;border-radius:11px;background:#eef3fa;display:grid;place-items:center;font-weight:900;color:#315273}.quote-main{flex:1}.quote-main strong{font-size:13px}.quote-main small{display:block;color:var(--muted);margin-top:3px}.price{text-align:right}.price strong{display:block;font-size:16px}.price small{color:var(--muted)}.select-btn{border:0;background:var(--navy);color:#fff;border-radius:9px;padding:8px 10px;font-size:11px;font-weight:800}
+.table{width:100%;border-collapse:collapse;font-size:12px}.table th{text-align:left;color:#8792a5;font-size:10px;text-transform:uppercase;letter-spacing:.7px;padding:10px;border-bottom:1px solid var(--line)}.table td{padding:13px 10px;border-bottom:1px solid var(--line)}.table tr:last-child td{border:0}
+.bar{height:8px;background:#edf1f6;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#1769e0,#20a4f3);border-radius:99px}
+.form-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-size:11px;color:#68758a;font-weight:800;margin-bottom:6px}.field input,.field select{width:100%;border:1px solid var(--line);background:#fbfcfe;border-radius:10px;padding:10px 11px;outline:none}.field input:focus,.field select:focus{border-color:#75b8f3;box-shadow:0 0 0 3px #1769e012}.primary{background:var(--blue);border:0;color:#fff;border-radius:11px;padding:11px 15px;font-weight:800}.secondary{background:#fff;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:10px 14px;font-weight:800}
+.filter{display:flex;gap:9px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 11px;font-size:11px;font-weight:800;color:#6c778b}.chip.active{background:#eaf3ff;color:var(--blue);border-color:#cfe5fb}
+.timeline{position:relative;margin:8px 0 0 7px;padding-left:24px}.timeline:before{content:"";position:absolute;left:4px;top:5px;bottom:7px;width:2px;background:#e4eaf2}.event{position:relative;padding:0 0 18px}.event:before{content:"";position:absolute;left:-24px;top:2px;width:10px;height:10px;border-radius:50%;background:#1769e0;border:3px solid #dcebfa}.event.done:before{background:#19a974}.event strong{font-size:12px}.event small{display:block;color:var(--muted);margin-top:3px}
+.notice{background:#fff8e8;border:1px solid #f6e3ae;color:#88630b;padding:12px;border-radius:12px;font-size:11px;line-height:1.5}
+.hidden{display:none!important}.mt{margin-top:18px}.gap{gap:18px}
+@media(max-width:1000px){.sidebar{width:72px}.logo span,.role-label,.nav button span,.sidebar-bottom .user-mini div{display:none}.logo{padding:4px 10px 28px}.nav button{justify-content:center}.main{margin-left:72px;width:calc(100% - 72px)}.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.service-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.topbar{padding:0 14px}.role-switch button{padding:7px 8px;font-size:10px}.content{padding:14px}.hero{padding:22px;display:block}.hero .quick{margin-top:16px}.stats,.three{grid-template-columns:1fr}.service-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}.main{min-width:0}.top-actions .icon-btn{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark"></div><span>Freight One</span></div>
+  <div class="role-label" id="roleLabel">Customer Portal</div>
+  <nav class="nav" id="nav"></nav>
+  <div class="sidebar-bottom"><div class="user-mini"><div class="avatar" id="avatar">A</div><div><b id="userName">Aarav Shah</b><small id="userRole">Customer</small></div></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="crumb">Freight One <span>/</span> <strong id="pageTitle">Customer Dashboard</strong></div>
+  <div class="top-actions">
+    <div class="role-switch">
+      <button data-role="customer" class="active">Customer</button>
+      <button data-role="partner">Partner</button>
+      <button data-role="admin">Super Admin</button>
+    </div>
+    <button class="icon-btn" onclick="toast('No new notifications')">🔔</button>
+    <button class="icon-btn" onclick="toast('Demo profile menu')">⋮</button>
+  </div>
+</header>
+
+<section class="content">
+  <div id="customerView">
+    <div class="hero">
+      <div><div class="eyebrow">Freight One Marketplace</div><h1>Move smarter. Ship better.</h1><p>Compare verified logistics partners, get transparent rates and book freight, warehousing and clearing services across India.</p></div>
+      <button class="quick" onclick="scrollToId('quoteBox')">＋ Get a Quick Quote</button>
+    </div>
+    <div class="grid stats">
+      <div class="stat"><div class="top">Active Shipments <span>🚚</span></div><div class="num">08</div><div class="trend">2 arriving today</div></div>
+      <div class="stat"><div class="top">Open Bookings <span>📦</span></div><div class="num">14</div><div class="trend">4 awaiting action</div></div>
+      <div class="stat"><div class="top">This Month <span>₹</span></div><div class="num">₹4.82L</div><div class="trend">↑ 12.4% vs last month</div></div>
+      <div class="stat"><div class="top">Saved Partners <span>★</span></div><div class="num">12</div><div class="trend">3 top-rated</div></div>
+    </div>
+    <div class="card" id="quoteBox">
+      <div class="card-head"><div><h3>Get an instant logistics quote</h3><div class="sub">Tell us what you need to move and compare partner prices.</div></div><span class="status blue">LIVE QUOTE ENGINE</span></div>
+      <div class="form-grid">
+        <div class="field"><label>SERVICE</label><select id="service"><option>Road Freight</option><option>Air Freight</option><option>Ocean Freight</option><option>Warehousing</option><option>Customs Clearing</option></select></div>
+        <div class="field"><label>SHIPMENT TYPE</label><select><option>Domestic</option><option>International</option><option>FCL</option><option>LCL</option></select></div>
+        <div class="field"><label>PICKUP</label><input value="Ahmedabad, Gujarat"></div>
+        <div class="field"><label>DELIVERY</label><input value="Mumbai, Maharashtra"></div>
+        <div class="field"><label>WEIGHT</label><input value="500 KG"></div>
+        <div class="field"><label>PICKUP DATE</label><input type="date" value="2026-10-10"></div>
+      </div>
+      <div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="primary" onclick="showQuotes()">Search Partner Rates →</button></div>
+    </div>
+    <div class="grid two mt">
+      <div class="card">
+        <div class="card-head"><div><h3>Recommended partner rates</h3><div class="sub">Ahmedabad → Mumbai · 500 KG</div></div><button class="link" onclick="showQuotes()">View all</button></div>
+        <div id="quotes">
+          <div class="quote-row"><div class="partner-logo">AG</div><div class="quote-main"><strong>Agility Logistics</strong><small>2 Days · Door to Door · ★ 4.9</small></div><div class="price"><strong>₹18,950</strong><small>incl. estimated taxes</small></div><button class="select-btn" onclick="book('Agility Logistics')">Book</button></div>
+          <div class="quote-row"><div class="partner-logo">DL</div><div class="quote-main"><strong>Delhivery Logistics</strong><small>3 Days · Door to Door · ★ 4.7</small></div><div class="price"><strong>₹17,820</strong><small>incl. estimated taxes</small></div><button class="select-btn" onclick="book('Delhivery Logistics')">Book</button></div>
+          <div class="quote-row"><div class="partner-logo">ST</div><div class="quote-main"><strong>Safexpress</strong><small>2 Days · Express · ★ 4.8</small></div><div class="price"><strong>₹19,420</strong><small>incl. estimated taxes</small></div><button class="select-btn" onclick="book('Safexpress')">Book</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Track a shipment</h3><div class="sub">Real-time booking status</div></div><span>📍</span></div>
+        <div class="field"><label>BOOKING / AWB NUMBER</label><input id="trackId" value="FM-2026-00184"></div>
+        <button class="primary" style="margin-top:10px;width:100%" onclick="track()">Track Shipment</button>
+        <div id="trackingResult" class="mt hidden">
+          <div class="timeline">
+            <div class="event done"><strong>Booking Confirmed</strong><small>06 Oct · 09:42 AM</small></div>
+            <div class="event done"><strong>Picked Up — Ahmedabad</strong><small>06 Oct · 03:15 PM</small></div>
+            <div class="event"><strong>In Transit</strong><small>Estimated arrival: 08 Oct</small></div>
+            <div class="event"><strong>Out for Delivery</strong><small>Pending</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mt">
+      <div class="card-head"><div><h3>Popular services</h3><div class="sub">One platform for your complete logistics journey.</div></div></div>
+      <div class="service-grid">
+        <div class="service"><div class="sicon">🚚</div><strong>Road Freight</strong><span>FTL, LTL & express delivery</span></div>
+        <div class="service"><div class="sicon">✈️</div><strong>Air Freight</strong><span>Fast domestic & international</span></div>
+        <div class="service"><div class="sicon">🚢</div><strong>Ocean Freight</strong><span>FCL & LCL shipping</span></div>
+        <div class="service"><div class="sicon">🏭</div><strong>Warehousing</strong><span>Storage & fulfilment</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="partnerView" class="hidden">
+    <div class="hero">
+      <div><div class="eyebrow">Partner Command Centre</div><h1>Grow your logistics business.</h1><p>Manage rate cards, booking requests, shipments and earnings from one partner portal.</p></div>
+      <button class="quick" onclick="toast('Rate card editor opened')">＋ Update Rate Card</button>
+    </div>
+    <div class="grid stats">
+      <div class="stat"><div class="top">New Requests <span>🔔</span></div><div class="num">23</div><div class="trend">7 need response today</div></div>
+      <div class="stat"><div class="top">Active Shipments <span>🚚</span></div><div class="num">46</div><div class="trend">↑ 8 this week</div></div>
+      <div class="stat"><div class="top">Monthly Revenue <span>₹</span></div><div class="num">₹18.6L</div><div class="trend">↑ 16.8%</div></div>
+      <div class="stat"><div class="top">Partner Rating <span>★</span></div><div class="num">4.82</div><div class="trend">Top 8% partners</div></div>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="card-head"><div><h3>New booking requests</h3><div class="sub">Respond before the request expires.</div></div><button class="link">View all</button></div>
+        <table class="table"><thead><tr><th>Request</th><th>Route</th><th>Service</th><th>Action</th></tr></thead>
+        <tbody><tr><td><b>FM-RF-0921</b><br><small>ABC Industries</small></td><td>AMD → DEL</td><td>Road Freight</td><td><button class="select-btn" onclick="acceptReq(this)">Quote</button></td></tr>
+        <tr><td><b>FM-AF-0917</b><br><small>Nova Retail</small></td><td>BOM → BLR</td><td>Air Freight</td><td><button class="select-btn" onclick="acceptReq(this)">Quote</button></td></tr>
+        <tr><td><b>FM-OF-0911</b><br><small>Global Exports</small></td><td>MUN → DXB</td><td>Ocean FCL</td><td><button class="select-btn" onclick="acceptReq(this)">Quote</button></td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Rate card performance</h3><div class="sub">Quote win-rate by service</div></div></div>
+        <p style="font-size:12px;margin:15px 0 7px">Road Freight <b style="float:right">74%</b></p><div class="bar"><i style="width:74%"></i></div>
+        <p style="font-size:12px;margin:15px 0 7px">Air Freight <b style="float:right">62%</b></p><div class="bar"><i style="width:62%"></i></div>
+        <p style="font-size:12px;margin:15px 0 7px">Ocean Freight <b style="float:right">48%</b></p><div class="bar"><i style="width:48%"></i></div>
+        <div class="notice mt">Tip: Your Ahmedabad → Mumbai road rate is 6% above the marketplace median. Adjusting it may improve conversions.</div>
+      </div>
+    </div>
+    <div class="card mt">
+      <div class="card-head"><div><h3>Active shipments</h3><div class="sub">Update milestone status and upload POD.</div></div><div class="filter"><span class="chip active">All</span><span class="chip">In Transit</span><span class="chip">Delivered</span></div></div>
+      <table class="table"><thead><tr><th>Booking</th><th>Customer</th><th>Route</th><th>Value</th><th>Status</th><th>Update</th></tr></thead>
+      <tbody><tr><td><b>FM-2026-00184</b></td><td>ABC Industries</td><td>Ahmedabad → Mumbai</td><td>₹18,950</td><td><span class="status blue">IN TRANSIT</span></td><td><button class="secondary" onclick="toast('Shipment status updated')">Update</button></td></tr>
+      <tr><td><b>FM-2026-00172</b></td><td>Nova Retail</td><td>Mumbai → Bengaluru</td><td>₹24,300</td><td><span class="status">DELIVERED</span></td><td><button class="secondary" onclick="toast('POD upload opened')">POD</button></td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div id="adminView" class="hidden">
+    <div class="hero">
+      <div><div class="eyebrow">Freight One Control Tower</div><h1>Everything under control.</h1><p>Monitor marketplace activity, partners, bookings, revenue and operations from one command centre.</p></div>
+      <button class="quick" onclick="toast('Create partner workflow opened')">＋ Add Partner</button>
+    </div>
+    <div class="grid stats">
+      <div class="stat"><div class="top">Customers <span>👥</span></div><div class="num">2,846</div><div class="trend">↑ 9.2% this month</div></div>
+      <div class="stat"><div class="top">Active Partners <span>🤝</span></div><div class="num">184</div><div class="trend">12 pending approval</div></div>
+      <div class="stat"><div class="top">Bookings Today <span>📦</span></div><div class="num">327</div><div class="trend">↑ 14.5% vs yesterday</div></div>
+      <div class="stat"><div class="top">GMV This Month <span>₹</span></div><div class="num">₹3.84Cr</div><div class="trend">↑ 21.3%</div></div>
+    </div>
+    <div class="grid three">
+      <div class="card"><div class="card-head"><div><h3>Marketplace health</h3><div class="sub">Today · live</div></div><span class="status">HEALTHY</span></div>
+        <p style="font-size:12px">Quote-to-book conversion <b style="float:right">38.6%</b></p><div class="bar"><i style="width:77%"></i></div>
+        <p style="font-size:12px">Partner response rate <b style="float:right">91.2%</b></p><div class="bar"><i style="width:91%"></i></div>
+        <p style="font-size:12px">On-time delivery <b style="float:right">94.8%</b></p><div class="bar"><i style="width:95%"></i></div>
+      </div>
+      <div class="card"><div class="card-head"><div><h3>Partner approvals</h3><div class="sub">Requires review</div></div><b style="font-size:24px;color:var(--orange)">12</b></div>
+        <div class="booking"><div><b>Swift Cargo Pvt Ltd</b><br><small>Road · Delhi NCR</small></div><button class="select-btn" onclick="approve(this)">Review</button></div>
+        <div class="booking"><div><b>BlueWave Shipping</b><br><small>Ocean · Mumbai</small></div><button class="select-btn" onclick="approve(this)">Review</button></div>
+        <div class="booking"><div><b>Metro Warehousing</b><br><small>Warehouse · Ahmedabad</small></div><button class="select-btn" onclick="approve(this)">Review</button></div>
+      </div>
+      <div class="card"><div class="card-head"><div><h3>Revenue split</h3><div class="sub">Current month</div></div></div>
+        <div style="display:flex;align-items:center;justify-content:center;height:100px;font-size:28px;font-weight:900;color:var(--blue)">₹3.84 Cr</div>
+        <div style="font-size:12px;display:grid;gap:8px"><span>Partner payouts <b style="float:right">₹3.12 Cr</b></span><span>Freight One margin <b style="float:right">₹52.4L</b></span><span>Taxes & fees <b style="float:right">₹19.6L</b></span></div>
+      </div>
+    </div>
+    <div class="card mt">
+      <div class="card-head"><div><h3>Live booking control</h3><div class="sub">Monitor and intervene across the network.</div></div><button class="link">Open operations</button></div>
+      <table class="table"><thead><tr><th>Booking</th><th>Customer</th><th>Partner</th><th>Route</th><th>Value</th><th>Status</th></tr></thead>
+      <tbody><tr><td><b>FM-2026-00184</b></td><td>ABC Industries</td><td>Agility Logistics</td><td>AMD → BOM</td><td>₹18,950</td><td><span class="status blue">IN TRANSIT</span></td></tr>
+      <tr><td><b>FM-2026-00183</b></td><td>Nova Retail</td><td>Safexpress</td><td>DEL → BLR</td><td>₹26,420</td><td><span class="status orange">PICKUP</span></td></tr>
+      <tr><td><b>FM-2026-00182</b></td><td>Global Exports</td><td>BlueWave Shipping</td><td>MUN → DXB</td><td>₹1.84L</td><td><span class="status">CONFIRMED</span></td></tr>
+      <tr><td><b>FM-2026-00181</b></td><td>TechBuild India</td><td>Metro Warehousing</td><td>AHM → AHM</td><td>₹42,800</td><td><span class="status blue">WAREHOUSE</span></td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<div id="toast" style="position:fixed;right:22px;bottom:22px;background:#10233f;color:#fff;padding:13px 16px;border-radius:12px;box-shadow:0 12px 30px #10233f35;display:none;font-size:12px;font-weight:700;z-index:99"></div>
+<script>
+const roles={
+ customer:{title:'Customer Dashboard',label:'Customer Portal',name:'Aarav Shah',role:'Customer',initial:'A',view:'customerView',
+ nav:[['⌂','Dashboard'],['＋','Get Quote'],['▣','My Bookings'],['🚚','Shipments'],['₹','Invoices & Payments'],['★','Saved Partners'],['?','Support']]},
+ partner:{title:'Partner Dashboard',label:'Partner Portal',name:'Agility Logistics',role:'Verified Partner',initial:'AG',view:'partnerView',
+ nav:[['⌂','Dashboard'],['↗','Booking Requests'],['₹','Rate Cards'],['▣','Bookings'],['🚚','Shipments'],['▤','Documents'],['₹','Earnings'],['⚙','Profile']]},
+ admin:{title:'Super Admin Dashboard',label:'Freight One Control Tower',name:'Freight One Admin',role:'Super Administrator',initial:'FM',view:'adminView',
+ nav:[['⌂','Dashboard'],['👥','Customers'],['🤝','Partners'],['▣','Bookings'],['₹','Rates & Quotes'],['🚚','Shipments'],['▤','Payments & Invoices'],['▥','Reports'],['⚙','Settings']]}
+};
+function setRole(role){
+ document.querySelectorAll('.role-switch button').forEach(b=>b.classList.toggle('active',b.dataset.role===role));
+ const r=roles[role]; document.getElementById('pageTitle').textContent=r.title;document.getElementById('roleLabel').textContent=r.label;document.getElementById('userName').textContent=r.name;document.getElementById('userRole').textContent=r.role;document.getElementById('avatar').textContent=r.initial;
+ ['customerView','partnerView','adminView'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+ document.getElementById(r.view).classList.remove('hidden');
+ const nav=document.getElementById('nav');nav.innerHTML=r.nav.map((n,i)=>`<button class="${i===0?'active':''}" onclick="navClick(this,'${n[1]}')"><span class="ico">${n[0]}</span><span>${n[1]}</span></button>`).join('');
+}
+document.querySelectorAll('.role-switch button').forEach(b=>b.onclick=()=>setRole(b.dataset.role));
+function navClick(btn,label){document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');toast(label+' module selected');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>t.style.display='none',2200)}
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'center'})}
+function showQuotes(){toast('Live demo: partner rates refreshed');document.getElementById('quotes').style.opacity='.65';setTimeout(()=>document.getElementById('quotes').style.opacity='1',250)}
+function book(partner){toast('Booking initiated with '+partner+' — demo confirmation ready');}
+function track(){document.getElementById('trackingResult').classList.remove('hidden');toast('Shipment tracking loaded')}
+function acceptReq(btn){btn.textContent='Quoted ✓';btn.disabled=true;btn.style.opacity='.65';toast('Quote request opened')}
+function approve(btn){btn.textContent='Approved ✓';btn.disabled=true;btn.style.opacity='.65';toast('Partner moved to approved queue')}
+setRole('customer');
+</script>
+</body>
+</html>
